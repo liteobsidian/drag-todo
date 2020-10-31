@@ -8,12 +8,14 @@
 <script>
 export default {
   name: "todoItem",
+  props: {
+    date: String,
+    time: String,
+    title: String,
+    text: String
+  },
   data(){
     return {
-      title:'Покормить кота',
-      date:'20.11.2020',
-      time:'19:00',
-      text: 'Сухой + влажный корм 2 столовых ложки lorem ipsum dolor sit Lorem ipsum dolor sit amet'
     }
   }
 }

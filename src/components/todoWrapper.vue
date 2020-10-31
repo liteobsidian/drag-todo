@@ -3,15 +3,15 @@
     .title {{title}}
     .todosWrapper(:class="{todosWrapperInputMode : inputMode}")
       .todos
-        todo-item
-        todo-item
-        todo-item
-        todo-item
-        todo-item
-        todo-item
+        todo-item(v-for="item in todoItems"
+          :title="item.title"
+          :date="item.date"
+          :time="item.time"
+          :text="item.text"
+          )
         .dry(v-if="!inputMode")
-      button.addBtn(type="button" :buttonType="buttonType" v-if="!inputMode" @click="toggleInputMode") +
-      input-block.inputTodo(v-else @addNewTodo="addNewTodo")
+      button.addBtn(type="button" v-if="!inputMode" @click="toggleInputMode") +
+      input-block.inputTodo(v-else @addNewTodo="addNewTodo" :buttonType="buttonType")
 </template>
 
 <script>
@@ -23,7 +23,8 @@ export default {
   components: {InputBlock, TodoItem},
   props: {
     title: String,
-    buttonType: String
+    buttonType: String,
+    todoItems: Array
   },
   data(){
     return {
