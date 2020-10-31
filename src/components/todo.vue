@@ -4,21 +4,25 @@
     .grid-template
       .header Dragged TODO
       .content
-        todo-wrapper(v-for="title in todoColumns" :title="title")
+        todo-wrapper(v-for="todoArea in todos" :title="todoArea.title")
       .footer Please push from task and drag on.
 
 </template>
 
 <script>
 import TodoWrapper from "@/components/todoWrapper";
-
+import {mapState} from "vuex";
 export default {
   name: "todo",
   components: {TodoWrapper},
   data() {
     return {
-      todoColumns: ["Планируется", "В работе", "Сделано"]
     }
+  },
+  computed:{
+    ...mapState({
+      todos: state=>state.todos.todos
+    })
   }
 }
 </script>
@@ -37,7 +41,7 @@ export default {
     "header"
     "content"
     "footer";
-  grid-template-rows: 80px 1fr 70px;
+  grid-template-rows: 80px minmax(0%, 1fr) 70px;
   grid-template-columns: 1fr;
   grid-row-gap: 10px;
 }
@@ -59,7 +63,7 @@ export default {
 .content {
   grid-area: content;
   display: grid;
-  grid-template-rows: 1fr;
+  grid-template-rows: 100%;
   grid-template-columns: 1fr 1fr 1fr;
   grid-column-gap: 20px;
 }
