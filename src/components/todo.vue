@@ -4,7 +4,7 @@
     .grid-template
       .header Dragged TODO
       .content
-        todo-wrapper(v-for="todoArea in todos" :title="todoArea.title")
+        todo-wrapper(v-for="todoArea in todos" :title="todoArea.title"  :buttonType="todoArea.type" :key="todoArea.type")
       .footer Please push from task and drag on.
 
 </template>

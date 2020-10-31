@@ -14,19 +14,29 @@
 <script>
 export default {
   name: "inputBlock",
+  props: {
+    buttonType: String
+  },
   data(){
     return {
       todoObj: {
-        title: 'Покормить кота',
-        date: '2020-11-20',
-        time: '19:00',
-        text: 'Сухой + влажный корм 2 столовых ложки lorem ipsum dolor sit Lorem ipsum dolor sit amet'
-      }
+        title: '',
+        date: '',
+        time: '',
+        text: '',
+        id:'',
+        type:''
+      },
+      id:"0"
     }
   },
   methods:{
     addNewTodo(){
-      this.$emit('addNewTodo', this.todoObj)
+      this.id++;
+      this.todoObj.id=this.id;
+      console.log(this.buttonType)
+      this.todoObj.type=this.buttonType;
+      this.$emit('addNewTodo', {...this.todoObj})
       this.todoObj.title='';
       this.todoObj.date='';
       this.todoObj.time='';

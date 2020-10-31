@@ -10,8 +10,8 @@
         todo-item
         todo-item
         .dry(v-if="!inputMode")
-      button.addBtn(type="button" v-if="!inputMode" @click="AddTodo") +
-      input-block.inputTodo(v-else @addNewTodo="addTodo()")
+      button.addBtn(type="button" :buttonType="buttonType" v-if="!inputMode" @click="toggleInputMode") +
+      input-block.inputTodo(v-else @addNewTodo="addNewTodo")
 </template>
 
 <script>
@@ -22,20 +22,24 @@ export default {
   name:"todoWrapper",
   components: {InputBlock, TodoItem},
   props: {
-    title: String
+    title: String,
+    buttonType: String
   },
   data(){
     return {
-      inputMode: true
+      inputMode: false
     }
 
   },
   methods: {
     ...mapMutations(['addTodo']),
-    AddTodo(){
-      this.inputMode = !this.inputMode;
-      console.log(this.inputMode);
-      this.addTodo()
+    toggleInputMode(){
+      this.inputMode = !this.inputMode
+    },
+    addNewTodo(todoObj){
+      this.toggleInputMode();
+      console.log(todoObj);
+      this.addTodo(todoObj)
     }
   }
 }

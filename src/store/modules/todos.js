@@ -8,7 +8,17 @@ const todos = {
     },
     mutations: {
         addTodo(state, todo){
-            state.todos.todoItems.push(todo)
+            switch (todo.type){
+                case 'planned' :
+                    state.todos[0].todoItems.push(todo);
+                    break;
+                case 'working' :
+                    state.todos[1].todoItems.push(todo);
+                    break;
+                case 'completed' :
+                    state.todos[2].todoItems.push(todo);
+                    break;
+            }
         },
         removeTodo(state, todoId){
             state.todos = state.todos.filter(item=> item.id!==todoId)
