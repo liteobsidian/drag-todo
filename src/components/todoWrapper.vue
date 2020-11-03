@@ -1,17 +1,31 @@
 <template lang="pug">
   .wrapper
     .title {{title}}
-    .todosWrapper(:class="{todosWrapperInputMode : inputMode}")
-      .todos
-        todo-item(v-for="item in todoItems"
-          :title="item.title"
-          :date="item.date"
-          :time="item.time"
-          :text="item.text"
-          )
-        .dry(v-if="!inputMode")
+    .todosWrapper(
+      :class="{todosWrapperInputMode : inputMode}"
+      :id="type"
+      @drop="drop($event, type)"
+      @dragover="allowDrop($event)"
+      )
+      .placeholder(v-if="!items.length") Добавьте или перенесите сюда задание
+      todo-item.draggableItem(v-for="item in items"
+        :key="item.id"
+        :title="item.title"
+        :date="item.date"
+        :time="item.time"
+        :text="item.text"
+        :id="item.id"
+        :type="item.type"
+        @dragstart="drag"
+        @deleteTodo="deleteTodo(item.id)"
+      )
+      .dry(v-if="!inputMode")
       button.addBtn(type="button" v-if="!inputMode" @click="toggleInputMode") +
-      input-block.inputTodo(v-else @addNewTodo="addNewTodo" :buttonType="buttonType")
+      input-block.inputTodo(
+        v-else
+        @skipInput="toggleInputMode"
+        @addNewTodo="addNewTodo"
+        :buttonType="type")
 </template>
 
 <script>
@@ -20,11 +34,14 @@ import InputBlock from "@/components/inputBlock";
 import {mapMutations} from "vuex";
 export default {
   name:"todoWrapper",
-  components: {InputBlock, TodoItem},
+  components: {
+    InputBlock,
+    TodoItem
+  },
   props: {
     title: String,
-    buttonType: String,
-    todoItems: Array
+    type: String,
+    items: Array
   },
   data(){
     return {
@@ -33,14 +50,27 @@ export default {
 
   },
   methods: {
-    ...mapMutations(['addTodo']),
+    ...mapMutations(['addTodo', 'moveTodo', 'removeTodo']),
     toggleInputMode(){
       this.inputMode = !this.inputMode
     },
     addNewTodo(todoObj){
       this.toggleInputMode();
-      console.log(todoObj);
       this.addTodo(todoObj)
+    },
+    allowDrop(event){
+      event.preventDefault();
+    },
+    drag(e){
+      e.dataTransfer.setData('number', e.target.id);
+    },
+    drop(e, type) {
+      e.preventDefault();
+      let elemId = Number(e.dataTransfer.getData("number"));
+      this.moveTodo([elemId, type]);
+    },
+    deleteTodo(id){
+      this.removeTodo(id);
     }
   }
 }
@@ -71,6 +101,12 @@ export default {
     overflow: auto;
   }
 
+  .placeholder{
+    color: #808080;
+    text-align: center;
+    margin: 50% 10px 0 10px;
+  }
+
   .todosWrapperInputMode {
     height: calc(100% - 200px);
   }
@@ -96,7 +132,7 @@ export default {
     cursor: pointer;
     &:hover{
       background: #005a91;
-      font-size: 50px;
+      box-shadow: inset -2px -5px 8px 0px #00253c73
     }
   }
 
@@ -104,6 +140,10 @@ export default {
     position: absolute;
     left: 0;
     bottom: 0;
+  }
+
+  .draggableItem {
+    cursor: pointer;
   }
 
   .dry {

@@ -2,10 +2,15 @@
 <template lang="pug">
   .container
     .grid-template
-      .header Dragged TODO
+      .header Simple TODO
       .content
-        todo-wrapper(v-for="todoArea in todos" :title="todoArea.title"  :todoItems="todoArea.todoItems" :buttonType="todoArea.type" :key="todoArea.type")
-      .footer Please push from task and drag on.
+        todo-wrapper(v-for="column in init"
+        :title="column.title"
+        :type="column.type"
+        :items="filteredArray(column.type)"
+        )
+      .footer Другие мои работы на
+        a.link(href="https://trywrap.ru/") trywrap.ru
 
 </template>
 
@@ -17,14 +22,34 @@ export default {
   components: {TodoWrapper},
   data() {
     return {
+      init:[
+        {title: "Планируется", type: "planned"},
+        {title: "В работе", type:"working"},
+        {title: "Сделано", type:"completed"}
+      ]
     }
   },
   computed:{
     ...mapState({
-      todos: state=>state.todos.todos
+      todos: state=>state.todoItems
     })
+  },
+  methods:{
+    filteredArray (type) {
+      return(
+        this.todos.filter(obj => obj.type===type)
+      )
+    },
+    drop(e){
+      const currentId = e.dataTransfer.getData('currentId');
+      const item = document.getElementById(currentId);
+
+      item.style.display = "block";
+      e.target.appendChild(item)
+    }
   }
 }
+
 </script>
 
 <style lang="scss" scoped>
@@ -75,5 +100,15 @@ export default {
   font-size: 14px;
   color: #808080;
   letter-spacing: 0.06rem;
+}
+
+.link{
+  margin-left: 5px;
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  &:hover {
+    text-decoration: underline;
+  }
 }
 </style>
