@@ -4,8 +4,8 @@
     .todosWrapper(
       :class="{todosWrapperInputMode : inputMode}"
       :id="type"
-      @drop="drop($event, type)"
-      @dragover="allowDrop($event)"
+      @drop.prevent="drop($event, type)"
+      @dragover.prevent
       )
       .placeholder(v-if="!items.length") Добавьте или перенесите сюда задание
       todo-item.draggableItem(v-for="item in items"
@@ -58,14 +58,10 @@ export default {
       this.toggleInputMode();
       this.addTodo(todoObj)
     },
-    allowDrop(event){
-      event.preventDefault();
-    },
     drag(e){
       e.dataTransfer.setData('number', e.target.id);
     },
     drop(e, type) {
-      e.preventDefault();
       let elemId = Number(e.dataTransfer.getData("number"));
       this.moveTodo([elemId, type]);
     },
