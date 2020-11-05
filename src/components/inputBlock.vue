@@ -57,8 +57,8 @@ export default {
       this.clearObj();
     },
     clearObj(){
-      Object.keys(this.todoObj).forEach(function (prop) {
-        delete this.todoObj[prop];
+      Object.keys(this.todoObj).forEach((prop) => {
+        this.todoObj[prop]='';
       });
     },
     handleSkip() {
