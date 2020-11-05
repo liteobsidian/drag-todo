@@ -6,12 +6,12 @@
 
 <script>
 
-import todo from "@/components/todo";
+import Todo from "@/components/todo";
 
 export default {
   name: 'App',
   components: {
-    todo
+    Todo
   }
 }
 </script>

@@ -4,10 +4,12 @@
     .grid-template
       .header Simple TODO
       .content
-        todo-wrapper(v-for="column in init"
+        todo-wrapper(
+        v-for="column in getInitArray"
+        :key="column.type"
         :title="column.title"
         :type="column.type"
-        :items="filteredArray(column.type)"
+        :items="getItemsByType(column.type)"
         )
       .footer Другие мои работы на
         a.link(href="https://trywrap.ru/") trywrap.ru
@@ -16,37 +18,12 @@
 
 <script>
 import TodoWrapper from "@/components/todoWrapper";
-import {mapState} from "vuex";
+import {mapGetters} from "vuex";
 export default {
   name: "todo",
   components: {TodoWrapper},
-  data() {
-    return {
-      init:[
-        {title: "Планируется", type: "planned"},
-        {title: "В работе", type:"working"},
-        {title: "Сделано", type:"completed"}
-      ]
-    }
-  },
   computed:{
-    ...mapState({
-      todos: state=>state.todoItems
-    })
-  },
-  methods:{
-    filteredArray (type) {
-      return(
-        this.todos.filter(obj => obj.type===type)
-      )
-    },
-    drop(e){
-      const currentId = e.dataTransfer.getData('currentId');
-      const item = document.getElementById(currentId);
-
-      item.style.display = "block";
-      e.target.appendChild(item)
-    }
+    ...mapGetters(['getItemsByType', 'getInitArray'])
   }
 }
 

@@ -15,7 +15,6 @@
         :time="item.time"
         :text="item.text"
         :id="item.id"
-        :type="item.type"
         @dragstart="drag"
         @deleteTodo="deleteTodo(item.id)"
       )
@@ -31,7 +30,7 @@
 <script>
 import TodoItem from "@/components/todoItem";
 import InputBlock from "@/components/inputBlock";
-import {mapMutations} from "vuex";
+import {mapActions} from "vuex";
 export default {
   name:"todoWrapper",
   components: {
@@ -39,8 +38,20 @@ export default {
     TodoItem
   },
   props: {
-    title: String,
-    type: String,
+    title: {
+      type: String,
+      default: 'Планируется',
+      validator: (value)=>{
+        return ['Планируется', 'В работе', 'Сделано'].indexOf(value) !== -1;
+      }
+    },
+    type: {
+      type: String,
+      default: 'planned',
+      validator: (value)=>{
+        return ['planned', 'working', 'completed'].indexOf(value) !== -1;
+      }
+    },
     items: Array
   },
   data(){
@@ -50,20 +61,20 @@ export default {
 
   },
   methods: {
-    ...mapMutations(['addTodo', 'moveTodo', 'removeTodo']),
+    ...mapActions(['addTodo', 'moveTodo', 'removeTodo']),
     toggleInputMode(){
-      this.inputMode = !this.inputMode
+      this.inputMode = !this.inputMode;
     },
     addNewTodo(todoObj){
       this.toggleInputMode();
-      this.addTodo(todoObj)
+      this.addTodo(todoObj);
     },
     drag(e){
       e.dataTransfer.setData('number', e.target.id);
     },
     drop(e, type) {
-      let elemId = Number(e.dataTransfer.getData("number"));
-      this.moveTodo([elemId, type]);
+      const elemId = Number(e.dataTransfer.getData("number"));
+      this.moveTodo({id: elemId, type});
     },
     deleteTodo(id){
       this.removeTodo(id);

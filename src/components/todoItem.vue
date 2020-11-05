@@ -2,7 +2,7 @@
   .todoItem(
     draggable="true"
     @dragstart="drag($event)"
-    @dragend="()=>{this.isDrag=false}"
+    @dragend="isDrag=false"
     :class="{highlite : isDrag}"
     )
     .title {{title}}
@@ -16,10 +16,22 @@
 export default {
   name: "todoItem",
   props: {
-    date: String,
-    time: String,
-    title: String,
-    text: String
+    date: {
+      type: String,
+      default: '5.11.2020'
+    },
+    time: {
+      type: String,
+      default: '00:00'
+    },
+    title: {
+      type: String,
+      default: 'Hello'
+    },
+    text: {
+      type: String,
+      default: 'World'
+    }
   },
   data(){
     return {
@@ -28,11 +40,11 @@ export default {
   },
   methods:{
     drag(event){
-      this.isDrag=true
+      this.isDrag=true;
       this.$emit('dragstart', event);
     },
     deleteTodo(){
-      this.$emit('deleteTodo')
+      this.$emit('deleteTodo');
     }
   }
 }
